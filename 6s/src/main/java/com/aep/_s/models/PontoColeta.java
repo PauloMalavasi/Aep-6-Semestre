@@ -12,6 +12,50 @@ public class PontoColeta {
     private String id;
     private String nome;
     private String telefone;
-    private Enderco enderco;
-    private List<String> tipoResiduos;
+    private Endereco enderco;
+    private List<String> residuos;
+
+
+    public PontoColeta(){
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public Endereco getEnderco() {
+        return enderco;
+    }
+
+    public void setEnderco(Endereco enderco) {
+        this.enderco = enderco;
+    }
+
+    public List<String> getResiduos() {
+        return residuos;
+    }
+
+    public void setResiduos(List<String> residuos) {
+        this.residuos = residuos;
+    }
 }
