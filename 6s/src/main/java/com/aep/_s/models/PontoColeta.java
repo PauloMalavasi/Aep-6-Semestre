@@ -12,7 +12,7 @@ public class PontoColeta {
     private String id;
     private String nome;
     private String telefone;
-    private Endereco enderco;
+    private Endereco endereco;
     private List<String> residuos;
 
 
@@ -43,12 +43,12 @@ public class PontoColeta {
         this.telefone = telefone;
     }
 
-    public Endereco getEnderco() {
-        return enderco;
+    public Endereco getEndereco() {
+        return endereco;
     }
 
-    public void setEnderco(Endereco enderco) {
-        this.enderco = enderco;
+    public void setEndereco(Endereco enderco) {
+        this.endereco = enderco;
     }
 
     public List<String> getResiduos() {
