@@ -2,82 +2,137 @@
 
 ## Sobre o projeto
 
-O EcoDescarte é uma Prova de Conceito desenvolvida para a AEP do curso de Engenharia de Software.
+O EcoDescarte é uma Prova de Conceito desenvolvida para a AEP do 6º semestre de Engenharia de Software. A aplicação ajuda usuários a localizar pontos que recebem resíduos como eletrônicos, pilhas, baterias, papel, plástico, vidro e metal.
 
-A solução tem como objetivo auxiliar usuários a encontrar pontos adequados para o descarte de diferentes tipos de resíduos, contribuindo para o descarte correto e para a redução de impactos ambientais.
+O projeto está relacionado principalmente aos seguintes Objetivos de Desenvolvimento Sustentável da ONU:
 
-## Problema
+- **ODS 11 — Cidades e Comunidades Sustentáveis**;
+- **ODS 12 — Consumo e Produção Responsáveis**.
 
-Muitas pessoas não sabem onde descartar corretamente resíduos como eletrônicos, pilhas, baterias e outros materiais que não devem ser descartados junto ao lixo comum.
+## Funcionalidades
 
-O descarte incorreto desses materiais pode causar impactos ambientais e dificultar o processo de reciclagem.
-
-## ODS
-
-O projeto está relacionado ao:
-
-**ODS 12 – Consumo e Produção Responsáveis**
-
-A proposta contribui principalmente para o incentivo ao descarte correto de resíduos e à gestão ambientalmente adequada de materiais.
-
-## Funcionalidades da PoC
-
-A primeira versão do EcoDescarte permitirá:
-
-- Cadastrar pontos de coleta;
-- Cadastrar tipos de resíduos;
-- Consultar os pontos de coleta cadastrados;
-- Consultar os resíduos aceitos pelos pontos de coleta;
-- Armazenar os dados utilizando MongoDB.
+- Cadastrar um ponto de coleta;
+- Listar os pontos cadastrados;
+- Buscar um ponto pelo identificador;
+- Buscar pontos pelo nome;
+- Buscar pontos pelo resíduo aceito;
+- Atualizar um ponto de coleta;
+- Excluir um ponto de coleta.
 
 ## Tecnologias
 
-- Java
-- Spring Boot
-- Spring Web
-- Spring Data MongoDB
-- MongoDB
-- Maven
-- JUnit
-- Mockito
-- JaCoCo
-- Git e GitHub
+- Java 21;
+- Spring Boot 4.1.1;
+- Spring Web MVC;
+- Spring Data MongoDB;
+- MongoDB;
+- Maven Wrapper;
+- JUnit 5;
+- Mockito e MockMvc;
+- JaCoCo;
+- Springdoc OpenAPI.
 
-## Estrutura do projeto
+## Organização
 
-O projeto utiliza uma arquitetura organizada em camadas:
+O backend está na pasta `6s` e utiliza uma arquitetura em camadas:
 
-- `model`: representação dos objetos do sistema;
-- `repository`: comunicação com o MongoDB;
-- `service`: regras e operações da aplicação;
-- `controller`: endpoints da API;
-- `dto`: objetos utilizados para entrada e saída de dados;
-- `test`: testes automatizados.
+- `models`: documentos armazenados no MongoDB;
+- `repositories`: consultas e persistência;
+- `services`: casos de uso da aplicação;
+- `controllers`: endpoints HTTP;
+- `configuration`: configuração do OpenAPI;
+- `src/test`: testes automatizados.
+
+A documentação dos diagramas está em [`docs/diagramas.md`](docs/diagramas.md).
 
 ## Banco de dados
 
-O EcoDescarte utiliza MongoDB como banco de dados NoSQL.
+A PoC utiliza somente a coleção homogênea `pontos_coleta`. Cada documento possui:
 
-A aplicação utiliza múltiplas coleções e relacionamentos entre os documentos, atendendo aos requisitos do segundo semestre da AEP.
+- `nome`;
+- `telefone`;
+- `endereco`, composto por logradouro, número, bairro, CEP, cidade e UF;
+- `residuos`, uma lista com os materiais aceitos.
 
-Principais coleções:
+O script [`6s/mongodb/init.js`](6s/mongodb/init.js) cria a coleção e configura sua validação. Com o MongoDB em execução, inicialize o banco na raiz do repositório:
 
-- Pontos de coleta;
-- Resíduos.
+```powershell
+mongosh "mongodb://localhost:27017" --file .\6s\mongodb\init.js
+```
 
-Os pontos de coleta também possuem informações estruturadas, como endereço e lista de resíduos aceitos.
+A aplicação utiliza a conexão `mongodb://localhost:27017/ecodescarte`, configurada em `application.properties`.
 
 ## Como executar
 
 ### Pré-requisitos
 
-- Java 21 ou superior;
-- Maven;
-- MongoDB.
+- Git;
+- JDK 21 com `JAVA_HOME` e `Path` configurados;
+- MongoDB e MongoDB Shell (`mongosh`).
 
-### Executando o projeto
+O Maven não precisa ser instalado separadamente, pois o projeto inclui o Maven Wrapper.
 
-Clone o repositório:
+### Clonar e iniciar
 
-```bash
+```powershell
 git clone https://github.com/PauloMalavasi/Aep-6-Semestre.git
+cd .\Aep-6-Semestre\6s
+.\mvnw.cmd spring-boot:run
+```
+
+A API ficará disponível em `http://localhost:8080/ponto_coleta`.
+
+## Endpoints
+
+| Método | Caminho | Operação |
+| --- | --- | --- |
+| `POST` | `/ponto_coleta` | Cadastrar ponto |
+| `GET` | `/ponto_coleta` | Listar pontos |
+| `GET` | `/ponto_coleta/{id}` | Buscar por ID |
+| `GET` | `/ponto_coleta/nome-ponto?nome={nome}` | Buscar por nome |
+| `GET` | `/ponto_coleta/nome-residuo?nome={residuo}` | Buscar por resíduo |
+| `PUT` | `/ponto_coleta/{id}` | Atualizar ponto |
+| `DELETE` | `/ponto_coleta/{id}` | Excluir ponto |
+
+Exemplo de corpo para cadastro ou atualização:
+
+```json
+{
+  "nome": "Eco Ponto Centro",
+  "telefone": "(44) 99999-9999",
+  "endereco": {
+    "logradouro": "Avenida Brasil",
+    "numero": "100",
+    "bairro": "Centro",
+    "cep": "87000-000",
+    "cidade": "Maringá",
+    "uf": "PR"
+  },
+  "residuos": ["ELETRONICO", "PILHA", "BATERIA"]
+}
+```
+
+## Testes e cobertura
+
+Os testes de Service e Controller usam Mockito e MockMvc. Eles não precisam de uma instalação local do MongoDB.
+
+Para executar os testes:
+
+```powershell
+cd .\6s
+.\mvnw.cmd test
+```
+
+Para executar a verificação completa, gerar o relatório e validar o mínimo de 70%:
+
+```powershell
+.\mvnw.cmd clean verify
+```
+
+O relatório HTML será gerado em:
+
+```text
+6s/target/site/jacoco/index.html
+```
+
+Na validação mais recente foram executados 17 testes, sem falhas, com aproximadamente 89% de cobertura de instruções.
