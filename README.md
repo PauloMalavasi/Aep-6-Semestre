@@ -19,6 +19,8 @@ O projeto está relacionado principalmente aos seguintes Objetivos de Desenvolvi
 - Atualizar um ponto de coleta;
 - Excluir um ponto de coleta.
 
+O projeto também possui uma interface web responsiva para usar essas funcionalidades sem precisar montar as requisições manualmente.
+
 ## Tecnologias
 
 - Java 21;
@@ -31,6 +33,7 @@ O projeto está relacionado principalmente aos seguintes Objetivos de Desenvolvi
 - Mockito e MockMvc;
 - JaCoCo;
 - Springdoc OpenAPI.
+- HTML, CSS e JavaScript.
 
 ## Organização
 
@@ -80,7 +83,18 @@ cd .\Aep-6-Semestre\6s
 .\mvnw.cmd spring-boot:run
 ```
 
-A API ficará disponível em `http://localhost:8080/ponto_coleta`.
+A interface web ficará disponível em `http://localhost:8080` e a API em `http://localhost:8080/ponto_coleta`.
+
+### Como usar a interface
+
+1. Inicie o MongoDB local.
+2. Execute a aplicação com o comando mostrado acima.
+3. Abra `http://localhost:8080` no navegador.
+4. Use **Novo ponto** para cadastrar um local de coleta.
+5. Pesquise pelo nome do ponto ou pelo resíduo aceito.
+6. Use os botões dos cartões para editar ou excluir um cadastro.
+
+A interface se adapta a computadores, tablets e celulares. Caso o MongoDB não esteja em execução, a página ainda abre, mas exibirá um aviso ao tentar carregar ou alterar os pontos.
 
 ## Endpoints
 
@@ -135,4 +149,4 @@ O relatório HTML será gerado em:
 6s/target/site/jacoco/index.html
 ```
 
-Na validação mais recente foram executados 17 testes, sem falhas, com aproximadamente 89% de cobertura de instruções.
+Na validação mais recente foram executados 19 testes, sem falhas, mantendo a cobertura mínima configurada no JaCoCo.

@@ -27,4 +27,23 @@ class PontoColetaTest {
         assertSame(endereco, ponto.getEndereco());
         assertEquals(residuos, ponto.getResiduos());
     }
+
+    @Test
+    void deveArmazenarOsDadosDoEndereco() {
+        Endereco endereco = new Endereco();
+
+        endereco.setLogradouro("Avenida Brasil");
+        endereco.setNumero("100");
+        endereco.setBairro("Centro");
+        endereco.setCep("87000-000");
+        endereco.setCidade("Maringá");
+        endereco.setUf("PR");
+
+        assertEquals("Avenida Brasil", endereco.getLogradouro());
+        assertEquals("100", endereco.getNumero());
+        assertEquals("Centro", endereco.getBairro());
+        assertEquals("87000-000", endereco.getCep());
+        assertEquals("Maringá", endereco.getCidade());
+        assertEquals("PR", endereco.getUf());
+    }
 }
