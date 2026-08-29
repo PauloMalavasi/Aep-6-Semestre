@@ -457,7 +457,7 @@ select:focus-visible {
 
 .search-panel {
     display: grid;
-    grid-template-columns: minmax(250px, 1fr) 210px auto auto;
+    grid-template-columns: minmax(250px, 1fr) 210px auto auto auto;
     gap: 14px;
     padding: 20px;
     background: var(--cream);
@@ -1052,7 +1052,7 @@ body > footer {
         grid-template-columns: 1fr 200px auto;
     }
 
-    .button-clear {
+    #clear-search {
         grid-column: 1 / -1;
         justify-self: start;
     }

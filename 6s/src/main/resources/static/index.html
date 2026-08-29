@@ -94,6 +94,7 @@
                 </select>
             </div>
             <button class="button button-dark" type="submit">Buscar</button>
+            <button class="button button-clear" id="list-all" type="button">Ver todos</button>
             <button class="button button-clear" id="clear-search" type="button" hidden>Limpar</button>
         </form>
 
@@ -106,8 +107,8 @@
 
         <div class="empty-state" id="empty-state" hidden>
             <div class="empty-icon" aria-hidden="true">⌖</div>
-            <h3>Nenhum ponto encontrado</h3>
-            <p>Tente mudar sua busca ou cadastre o primeiro ponto de coleta.</p>
+            <h3 id="empty-title">Nenhum ponto encontrado</h3>
+            <p id="empty-message">Tente mudar sua busca ou cadastre o primeiro ponto de coleta.</p>
             <button class="button button-primary" id="empty-create" type="button">Cadastrar ponto</button>
         </div>
     </section>

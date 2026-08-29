@@ -15,7 +15,10 @@ const state = {
     pontos: [],
     editandoId: null,
     excluindoId: null,
-    buscaAtiva: false
+    buscaAtiva: false,
+    tipoBusca: null,
+    termoBusca: "",
+    erroCarregamento: false
 };
 
 const elements = {
@@ -27,7 +30,10 @@ const elements = {
     searchForm: document.querySelector("#search-form"),
     searchInput: document.querySelector("#search-input"),
     searchType: document.querySelector("#search-type"),
+    listAll: document.querySelector("#list-all"),
     clearSearch: document.querySelector("#clear-search"),
+    emptyTitle: document.querySelector("#empty-title"),
+    emptyMessage: document.querySelector("#empty-message"),
     refresh: document.querySelector("#refresh-list"),
     pointDialog: document.querySelector("#point-dialog"),
     pointForm: document.querySelector("#point-form"),
@@ -51,7 +57,8 @@ elements.confirmDelete.addEventListener("click", confirmarExclusao);
 elements.pointForm.addEventListener("submit", salvarPonto);
 elements.searchForm.addEventListener("submit", buscarPontos);
 elements.clearSearch.addEventListener("click", limparBusca);
-elements.refresh.addEventListener("click", () => carregarPontos());
+elements.listAll.addEventListener("click", listarTodosOsPontos);
+elements.refresh.addEventListener("click", listarTodosOsPontos);
 elements.grid.addEventListener("click", tratarAcaoDoCard);
 
 document.querySelector("#cep").addEventListener("input", event => {
@@ -83,6 +90,7 @@ carregarPontos();
 
 async function carregarPontos(url = API_URL, mensagem = null) {
     mostrarCarregamento();
+    state.erroCarregamento = false;
 
     try {
         const pontos = await requisicao(url);
@@ -90,6 +98,7 @@ async function carregarPontos(url = API_URL, mensagem = null) {
         renderizarPontos(mensagem);
     } catch (error) {
         state.pontos = [];
+        state.erroCarregamento = true;
         renderizarPontos();
         elements.resultLabel.textContent = "Não foi possível acessar a API.";
         mostrarToast("Não foi possível carregar os pontos. Confira se o servidor e o MongoDB estão ativos.", true);
@@ -116,12 +125,37 @@ function renderizarPontos(mensagem = null) {
     elements.resultLabel.textContent = mensagem || `${state.pontos.length} ${state.pontos.length === 1 ? "local encontrado" : "locais encontrados"}`;
 
     if (!state.pontos.length) {
+        atualizarEstadoVazio();
         elements.empty.hidden = false;
         return;
     }
 
     elements.empty.hidden = true;
     elements.grid.innerHTML = state.pontos.map(criarCard).join("");
+}
+
+function atualizarEstadoVazio() {
+    if (state.erroCarregamento) {
+        elements.emptyTitle.textContent = "Não foi possível carregar os pontos";
+        elements.emptyMessage.textContent = "Verifique se o servidor e o MongoDB estão ativos e tente novamente.";
+        return;
+    }
+
+    if (state.buscaAtiva && state.tipoBusca === "residuo") {
+        elements.resultLabel.textContent = `Resíduo “${state.termoBusca}” não disponível`;
+        elements.emptyTitle.textContent = "Resíduo não disponível";
+        elements.emptyMessage.textContent = `Nenhum ponto cadastrado recebe “${state.termoBusca}”. Tente outro resíduo ou veja todos os pontos.`;
+        return;
+    }
+
+    if (state.buscaAtiva) {
+        elements.emptyTitle.textContent = "Nenhum ponto encontrado";
+        elements.emptyMessage.textContent = `Não encontramos um ponto com o nome “${state.termoBusca}”. Tente outro nome ou veja todos os pontos.`;
+        return;
+    }
+
+    elements.emptyTitle.textContent = "Nenhum ponto cadastrado";
+    elements.emptyMessage.textContent = "Cadastre o primeiro ponto de coleta para começar.";
 }
 
 function criarCard(ponto) {
@@ -160,17 +194,25 @@ async function buscarPontos(event) {
     }
 
     state.buscaAtiva = true;
+    state.tipoBusca = elements.searchType.value;
+    state.termoBusca = termo;
     elements.clearSearch.hidden = false;
-    const tipo = elements.searchType.value;
+    const tipo = state.tipoBusca;
     const endpoint = tipo === "residuo" ? "/nome-residuo" : "/nome-ponto";
     const parametro = encodeURIComponent(termo);
     await carregarPontos(`${API_URL}${endpoint}?nome=${parametro}`, `Resultados para “${termo}”`);
 }
 
 async function limparBusca() {
+    await listarTodosOsPontos();
+}
+
+async function listarTodosOsPontos() {
     elements.searchForm.reset();
     elements.clearSearch.hidden = true;
     state.buscaAtiva = false;
+    state.tipoBusca = null;
+    state.termoBusca = "";
     await carregarPontos();
 }
 
