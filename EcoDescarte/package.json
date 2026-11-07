@@ -1,0 +1,11 @@
+{
+  "name": "ecodescarte-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test --experimental-test-coverage --test-coverage-include=6s/src/main/resources/static/js/*.js --test-coverage-include=6s/mongodb/*.js --test-coverage-lines=70 --test-coverage-functions=70 --test-coverage-branches=70 tests/*.test.cjs",
+    "test:report": "node --test --experimental-test-coverage --test-coverage-include=6s/src/main/resources/static/js/*.js --test-coverage-include=6s/mongodb/*.js --test-coverage-lines=70 --test-coverage-functions=70 --test-coverage-branches=70 --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/javascript.lcov tests/*.test.cjs",
+    "pretest:report": "node -e \"require('node:fs').mkdirSync('coverage', {recursive:true})\""
+  },
+  "engines": { "node": ">=22.16.0" },
+  "devDependencies": { "jsdom": "26.1.0" }
+}

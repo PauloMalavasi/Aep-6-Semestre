@@ -1,152 +1,67 @@
 # EcoDescarte
 
-## Sobre o projeto
-
-O EcoDescarte é uma Prova de Conceito desenvolvida para a AEP do 6º semestre de Engenharia de Software. A aplicação ajuda usuários a localizar pontos que recebem resíduos como eletrônicos, pilhas, baterias, papel, plástico, vidro e metal.
-
-O projeto está relacionado principalmente aos seguintes Objetivos de Desenvolvimento Sustentável da ONU:
-
-- **ODS 11 — Cidades e Comunidades Sustentáveis**;
-- **ODS 12 — Consumo e Produção Responsáveis**.
+Projeto acadêmico da AEP do 6º semestre de Engenharia de Software, voltado ao cadastro e à consulta de pontos de coleta de resíduos. Relaciona-se aos **ODS 11 e 12**.
 
 ## Funcionalidades
 
-- Cadastrar um ponto de coleta;
-- Listar os pontos cadastrados;
-- Buscar um ponto pelo identificador;
-- Buscar pontos pelo nome;
-- Buscar pontos pelo resíduo aceito;
-- Atualizar um ponto de coleta;
-- Excluir um ponto de coleta.
-
-O projeto também possui uma interface web responsiva para usar essas funcionalidades sem precisar montar as requisições manualmente.
+- Cadastrar, listar, buscar, editar e excluir pontos de coleta.
+- Pesquisar por nome e por tipo de resíduo.
+- Cadastrar e gerenciar organizações responsáveis pelos pontos.
+- Utilizar as funcionalidades por uma interface web responsiva ou pela API REST.
 
 ## Tecnologias
 
-- Java 21;
-- Spring Boot 4.1.1;
-- Spring Web MVC;
-- Spring Data MongoDB;
-- MongoDB;
-- Maven Wrapper;
-- JUnit 5;
-- Mockito e MockMvc;
-- JaCoCo;
-- Springdoc OpenAPI.
-- HTML, CSS e JavaScript.
+Java 21, Spring Boot, MongoDB, Maven, HTML, CSS e JavaScript. Testes com JUnit, Mockito, MockMvc, JaCoCo e Node.js.
 
-## Organização
+## Banco de dados e evolução
 
-O backend está na pasta `6s` e utiliza uma arquitetura em camadas:
+Na primeira entrega, a aplicação utilizava a coleção `pontos_coleta`. Na segunda, passou a utilizar duas coleções relacionadas:
 
-- `models`: documentos armazenados no MongoDB;
-- `repositories`: consultas e persistência;
-- `services`: casos de uso da aplicação;
-- `controllers`: endpoints HTTP;
-- `configuration`: configuração do OpenAPI;
-- `src/test`: testes automatizados.
+- `organizacoes`: dados das organizações responsáveis.
+- `pontos_coleta`: nome, telefone, endereço, resíduos aceitos e `organizacaoId`.
 
-A documentação dos diagramas está em [`docs/diagramas.md`](docs/diagramas.md).
+A segunda entrega também acrescentou validações, tratamento de erros e mais testes. O sistema possui três pontos fictícios para demonstração, inseridos automaticamente na inicialização quando o MongoDB está disponível. O script abaixo prepara as coleções e suas regras de validação.
 
-## Banco de dados
+## Como executar no Windows
 
-A PoC utiliza somente a coleção homogênea `pontos_coleta`. Cada documento possui:
+**Pré-requisitos:** JDK 21 (`JAVA_HOME` configurado), MongoDB Server em execução, MongoDB Shell (`mongosh`) e Git.
 
-- `nome`;
-- `telefone`;
-- `endereco`, composto por logradouro, número, bairro, CEP, cidade e UF;
-- `residuos`, uma lista com os materiais aceitos.
-
-O script [`6s/mongodb/init.js`](6s/mongodb/init.js) cria a coleção e configura sua validação. Com o MongoDB em execução, inicialize o banco na raiz do repositório:
-
-```powershell
-mongosh "mongodb://localhost:27017" --file .\6s\mongodb\init.js
-```
-
-A aplicação utiliza a conexão `mongodb://localhost:27017/ecodescarte`, configurada em `application.properties`.
-
-## Como executar
-
-### Pré-requisitos
-
-- Git;
-- JDK 21 com `JAVA_HOME` e `Path` configurados;
-- MongoDB e MongoDB Shell (`mongosh`).
-
-O Maven não precisa ser instalado separadamente, pois o projeto inclui o Maven Wrapper.
-
-### Clonar e iniciar
+No PowerShell:
 
 ```powershell
 git clone https://github.com/PauloMalavasi/Aep-6-Semestre.git
-cd .\Aep-6-Semestre\6s
+cd .\Aep-6-Semestre
+mongosh "mongodb://localhost:27017" --file .\6s\mongodb\init.js
+cd .\6s
 .\mvnw.cmd spring-boot:run
 ```
 
-A interface web ficará disponível em `http://localhost:8080` e a API em `http://localhost:8080/ponto_coleta`.
+Acesse:
 
-### Como usar a interface
-
-1. Inicie o MongoDB local.
-2. Execute a aplicação com o comando mostrado acima.
-3. Abra `http://localhost:8080` no navegador.
-4. Use **Novo ponto** para cadastrar um local de coleta.
-5. Pesquise pelo nome do ponto ou pelo resíduo aceito.
-6. Use os botões dos cartões para editar ou excluir um cadastro.
-
-A interface se adapta a computadores, tablets e celulares. Caso o MongoDB não esteja em execução, a página ainda abre, mas exibirá um aviso ao tentar carregar ou alterar os pontos.
-
-## Endpoints
-
-| Método | Caminho | Operação |
-| --- | --- | --- |
-| `POST` | `/ponto_coleta` | Cadastrar ponto |
-| `GET` | `/ponto_coleta` | Listar pontos |
-| `GET` | `/ponto_coleta/{id}` | Buscar por ID |
-| `GET` | `/ponto_coleta/nome-ponto?nome={nome}` | Buscar por nome |
-| `GET` | `/ponto_coleta/nome-residuo?nome={residuo}` | Buscar por resíduo |
-| `PUT` | `/ponto_coleta/{id}` | Atualizar ponto |
-| `DELETE` | `/ponto_coleta/{id}` | Excluir ponto |
-
-Exemplo de corpo para cadastro ou atualização:
-
-```json
-{
-  "nome": "Eco Ponto Centro",
-  "telefone": "(44) 99999-9999",
-  "endereco": {
-    "logradouro": "Avenida Brasil",
-    "numero": "100",
-    "bairro": "Centro",
-    "cep": "87000-000",
-    "cidade": "Maringá",
-    "uf": "PR"
-  },
-  "residuos": ["ELETRONICO", "PILHA", "BATERIA"]
-}
-```
+- **Aplicação:** http://localhost:8080
+- **API de pontos:** http://localhost:8080/ponto_coleta
+- **Documentação da API (Swagger):** http://localhost:8080/docs
 
 ## Testes e cobertura
 
-Os testes de Service e Controller usam Mockito e MockMvc. Eles não precisam de uma instalação local do MongoDB.
-
-Para executar os testes:
-
-```powershell
-cd .\6s
-.\mvnw.cmd test
-```
-
-Para executar a verificação completa, gerar o relatório e validar o mínimo de 70%:
+Na pasta `6s`, execute:
 
 ```powershell
 .\mvnw.cmd clean verify
 ```
 
-O relatório HTML será gerado em:
+O relatório de cobertura fica em `6s/target/site/jacoco/index.html` (caminho a partir da raiz do repositório).
 
-```text
-6s/target/site/jacoco/index.html
+Na validação documentada em **31/10/2026**, foram registrados **65 testes Java aprovados** e **99,23% de cobertura de instruções Java**, acima do mínimo de 70% exigido na AEP. Para os testes JavaScript, na raiz do repositório, com Node.js instalado:
+
+```powershell
+npm ci --ignore-scripts
+npm run test:report
 ```
 
-Na validação mais recente foram executados 19 testes, sem falhas, mantendo a cobertura mínima configurada no JaCoCo.
+## Documentação
+
+- [Diagramas](docs/diagramas.md)
+- [Validação e resultados dos testes](docs/validacao.md)
+- [Quadro de tarefas](docs/quadro-tarefas.md)
+- [Segunda entrega](docs/segunda-entrega.md)

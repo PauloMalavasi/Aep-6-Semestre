@@ -1,0 +1,10 @@
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+6s/target/
+.local/
+.DS_Store
+node_modules/
+coverage/

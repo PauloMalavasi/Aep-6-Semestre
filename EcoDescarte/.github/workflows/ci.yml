@@ -1,0 +1,39 @@
+name: Testes do EcoDescarte
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: 6s/pom.xml
+      - name: Compilar, testar e validar cobertura
+        working-directory: 6s
+        run: bash ./mvnw --batch-mode clean verify
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Testar JavaScript e validar cobertura
+        run: npm run test:report
+      - name: Guardar relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testes-e-cobertura
+          path: |
+            6s/target/surefire-reports/
+            6s/target/site/jacoco/
+            coverage/
